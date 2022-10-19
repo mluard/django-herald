@@ -1,0 +1,74 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "django-herald"
+dynamic = ["version"]
+description = "Django library for separating the message content from transmission method"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Worthwhile", email = "devs@worthwhile.com"}
+]
+keywords = ["django", "notifications", "messaging"]
+classifiers = [
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "django>=4.2",
+    "jsonpickle",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/worthwhile/django-herald/"
+"Download" = "https://github.com/worthwhile/django-herald/tarball/"
+
+[project.optional-dependencies]
+twilio = ["twilio"]
+html2text = ["html2text"]
+
+[tool.hatch.version]
+path = "herald/_version.py"
+
+[tool.hatch.build]
+include = [
+    "herald/**/*.py",
+    "herald/templates/**/*",
+    "herald/contrib/auth/templates/**/*",
+    "LICENSE",
+]
+
+[tool.black]
+line-length = 98
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312', 'py313']
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.mypy_cache
+  | \.nox
+  | \.venv
+  | dist
+)/
+'''
+
+[dependency-groups]
+dev = [
+    "pytz>=2025.2",
+    "twilio>=6.0.0",
+    "html2text>=2019.8.11",
+    "coveralls>=4.0.1",
+]

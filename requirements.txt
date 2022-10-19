@@ -1,7 +1,0 @@
-six
-mock
-jsonpickle
-twilio
-coveralls
-pytz
-html2text

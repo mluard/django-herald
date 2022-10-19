@@ -3,7 +3,7 @@ from django.test import TestCase, Client
 from django.utils import timezone
 from django.urls import reverse
 
-from mock import patch
+from unittest.mock import patch
 
 from herald.models import SentNotification
 

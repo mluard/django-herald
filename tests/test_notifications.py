@@ -10,7 +10,7 @@ from django.utils import timezone
 from herald.base import EmailNotification, NotificationBase, TwilioTextNotification
 from herald.models import SentNotification
 
-from mock import patch
+from unittest.mock import patch
 
 from .notifications import MyNotification, MyNotificationAttachmentOpen
 

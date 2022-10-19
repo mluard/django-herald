@@ -1,5 +1,4 @@
-import six
-from mock import patch
+from unittest.mock import patch
 
 from django.test import TestCase
 
@@ -13,7 +12,7 @@ class SentNotificationTests(TestCase):
             notification_class="tests.notifications.MyNotification"
         )
         self.assertEqual(
-            six.text_type(notification), "tests.notifications.MyNotification"
+            str(notification), "tests.notifications.MyNotification"
         )
 
     def test_get_recipients(self):
@@ -47,5 +46,5 @@ class NotificationTests(TestCase):
             notification_class="tests.notifications.MyNotification"
         )
         self.assertEqual(
-            six.text_type(notification), "tests.notifications.MyNotification"
+            str(notification), "tests.notifications.MyNotification"
         )
