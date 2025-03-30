@@ -51,19 +51,21 @@ include = [
     "LICENSE",
 ]
 
-[tool.black]
+[tool.ruff]
 line-length = 98
-target-version = ['py38', 'py39', 'py310', 'py311', 'py312', 'py313']
-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.mypy_cache
-  | \.nox
-  | \.venv
-  | dist
-)/
-'''
+target-version = "py38"
+exclude = [
+    ".eggs",
+    ".git",
+    ".mypy_cache",
+    ".nox",
+    ".venv",
+    "dist",
+    "migrations",
+]
+
+[tool.ruff.format]
+# Formatter configuration inherits line-length from tool.ruff section
 
 [dependency-groups]
 dev = [
@@ -71,4 +73,5 @@ dev = [
     "twilio>=6.0.0",
     "html2text>=2019.8.11",
     "coveralls>=4.0.1",
+    "ruff>=0.11.2",
 ]
