@@ -22,7 +22,7 @@ class HeraldConfig(AppConfig):
 
         try:
             # add any new notifications to database.
-            for index, klass in enumerate(registry._registry):
+            for _index, klass in enumerate(registry._registry):
                 notification, created = Notification.objects.get_or_create(
                     notification_class=klass.get_class_path(),
                     defaults={

@@ -52,7 +52,7 @@ class PasswordResetEmail(EmailNotification):
         self.html_email_template_name = html_email_template_name
 
     def get_context_data(self):
-        context = super(PasswordResetEmail, self).get_context_data()
+        context = super().get_context_data()
 
         if not self.site_name or self.domain:
             current_site = Site.objects.get_current()
@@ -88,7 +88,7 @@ class PasswordResetEmail(EmailNotification):
         return context
 
     def get_subject(self):
-        subject = super(PasswordResetEmail, self).get_subject()
+        subject = super().get_subject()
 
         if not subject:
             # subject was not defined on the class. Use the default subject template to get the subject.

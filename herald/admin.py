@@ -49,7 +49,7 @@ class SentNotificationAdmin(admin.ModelAdmin):
 
         opts = self.model._meta
         resend_url = reverse(
-            "admin:%s_%s_resend" % (opts.app_label, opts.model_name),
+            f"admin:{opts.app_label}_{opts.model_name}_resend",
             current_app=self.admin_site.name,
             args=(obj.pk,),
         )
@@ -57,7 +57,7 @@ class SentNotificationAdmin(admin.ModelAdmin):
         return mark_safe(f'<a href="{resend_url}">Resend</a>')
 
     def get_urls(self):
-        urls = super(SentNotificationAdmin, self).get_urls()
+        urls = super().get_urls()
         opts = self.model._meta
 
         def wrap(view):
@@ -76,7 +76,7 @@ class SentNotificationAdmin(admin.ModelAdmin):
         info = opts.app_label, opts.model_name
 
         return [
-            url(r"^(.+)/resend/$", wrap(self.resend_view), name="%s_%s_resend" % info),
+            url(r"^(.+)/resend/$", wrap(self.resend_view), name="{}_{}_resend".format(*info)),
         ] + urls
 
     @csrf_protect_m

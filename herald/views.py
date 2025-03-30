@@ -17,7 +17,7 @@ class TestNotificationList(TemplateView):
     template_name = "herald/test/notification_list.html"
 
     def get_context_data(self, **kwargs):
-        context = super(TestNotificationList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         context["notifications"] = [
             (index, x.__name__, x.render_types, (y.__name__ for y in x.__bases__))

@@ -63,15 +63,9 @@ class NotificationBase:
 
         recipients = self.get_recipients()
 
-        if "text" in self.render_types:
-            text_content = self.render("text", context)
-        else:
-            text_content = None
+        text_content = self.render("text", context) if "text" in self.render_types else None
 
-        if "html" in self.render_types:
-            html_content = self.render("html", context)
-        else:
-            html_content = None
+        html_content = self.render("html", context) if "html" in self.render_types else None
 
         sent_from = self.get_sent_from()
         subject = self.get_subject()
@@ -275,7 +269,7 @@ class EmailNotification(NotificationBase):
     attachments = None
 
     def get_context_data(self):
-        context = super(EmailNotification, self).get_context_data()
+        context = super().get_context_data()
         context["subject"] = self.subject
         return context
 
@@ -321,7 +315,7 @@ class EmailNotification(NotificationBase):
     def render(self, render_type, context):
         if render_type == "text" and getattr(settings, "HERALD_HTML2TEXT_ENABLED", False):
             try:
-                content = super(EmailNotification, self).render("text", context)
+                content = super().render("text", context)
 
             # Render plain text version from HTML
             except TemplateDoesNotExist:
@@ -329,10 +323,10 @@ class EmailNotification(NotificationBase):
 
             if content is None:
                 content = self.get_html2text_converter().handle(
-                    super(EmailNotification, self).render("html", context)
+                    super().render("html", context)
                 )
         else:
-            content = super(EmailNotification, self).render(render_type, context)
+            content = super().render(render_type, context)
 
         return content
 
