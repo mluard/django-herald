@@ -47,7 +47,7 @@ class SentNotificationAdmin(admin.ModelAdmin):
         Creates a link field that takes user to re-send view to resend the notification
         """
 
-        opts = self.model._meta  # pylint: disable=W0212
+        opts = self.model._meta
         resend_url = reverse(
             "admin:%s_%s_resend" % (opts.app_label, opts.model_name),
             current_app=self.admin_site.name,
@@ -58,7 +58,7 @@ class SentNotificationAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         urls = super(SentNotificationAdmin, self).get_urls()
-        opts = self.model._meta  # pylint: disable=W0212
+        opts = self.model._meta
 
         def wrap(view):
             """

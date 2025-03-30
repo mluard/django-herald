@@ -21,7 +21,7 @@ class TestNotificationList(TemplateView):
 
         context["notifications"] = [
             (index, x.__name__, x.render_types, (y.__name__ for y in x.__bases__))
-            for index, x in enumerate(registry._registry)  # pylint: disable=W0212
+            for index, x in enumerate(registry._registry)
         ]
 
         return context
@@ -32,7 +32,7 @@ class TestNotification(View):
     View for showing rendered test notification
     """
 
-    def get(self, request, *args, **kwargs):  # pylint: disable=W0613
+    def get(self, request, *args, **kwargs):
         """
         GET request
         """
@@ -40,7 +40,7 @@ class TestNotification(View):
         index = int(kwargs["index"])
         render_type = kwargs["type"]
 
-        obj = registry._registry[index](*registry._registry[index].get_demo_args())  # pylint: disable=W0212
+        obj = registry._registry[index](*registry._registry[index].get_demo_args())
 
         context = obj.get_context_data()
 

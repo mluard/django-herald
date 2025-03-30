@@ -47,7 +47,7 @@ class NotificationRegistry(object):
         return _notification_wrapper
 
 
-registry = NotificationRegistry()  # pylint: disable=C0103
+registry = NotificationRegistry()
 
 
 def autodiscover():

@@ -64,8 +64,38 @@ exclude = [
     "migrations",
 ]
 
+[tool.ruff.lint]
+# Select specific rule sets
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+    "N",  # pep8-naming
+    "COM", # flake8-commas
+    "RET", # return statements
+    "SIM", # simplifications
+]
+ignore = [
+    "E501",  # line length - handled by formatter
+    "COM812", # trailing comma - conflicts with formatter
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["herald"]
+known-third-party = ["django", "jsonpickle", "twilio", "html2text"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
 [tool.ruff.format]
-# Formatter configuration inherits line-length from tool.ruff section
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+skip-magic-trailing-comma = false
+docstring-code-format = true
 
 [dependency-groups]
 dev = [

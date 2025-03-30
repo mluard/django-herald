@@ -229,7 +229,7 @@ class NotificationBase(object):
                 sent_notification.get_attachments(),
             )
             sent_notification.status = sent_notification.STATUS_SUCCESS
-        except Exception as exc:  # pylint: disable=W0703
+        except Exception as exc:
             # we want to handle any exception whatsoever
             sent_notification.status = sent_notification.STATUS_FAILED
             sent_notification.error_message = str(exc)
@@ -271,7 +271,7 @@ class EmailNotification(NotificationBase):
     subject = None
     to_emails = None
     bcc = None
-    cc = None  # pylint: disable=C0103
+    cc = None
     headers = None
     reply_to = None
     attachments = None
