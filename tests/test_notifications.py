@@ -169,11 +169,15 @@ class BaseNotificationTests(TestCase):
 
     def test_get_encoded_attachments_file(self):
         class TestNotification(EmailNotification):
-            attachments = [File(open("tests/python.jpeg", "rb"))]
+            pass
 
-        attachments = jsonpickle.loads(TestNotification()._get_encoded_attachments())
-        self.assertEqual(attachments[0][0], "tests/python.jpeg")
-        self.assertEqual(attachments[0][2], "image/jpeg")
+        with open("tests/python.jpeg", "rb") as f:
+            file_obj = File(f)
+            TestNotification.attachments = [file_obj]
+            attachments = jsonpickle.loads(TestNotification()._get_encoded_attachments())
+
+            self.assertEqual(attachments[0][0], "tests/python.jpeg")
+            self.assertEqual(attachments[0][2], "image/jpeg")
 
     def test_delete_notifications_no_setting(self):
         # create a test notification from a long time ago

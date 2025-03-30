@@ -100,7 +100,7 @@ class PasswordResetEmail(EmailNotification):
 
     @staticmethod
     def get_demo_args():
-        User = get_user_model()
+        User = get_user_model()  # noqa: N806
         return [User(**{User.USERNAME_FIELD: "username@example.com"})]
 
 

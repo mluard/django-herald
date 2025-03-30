@@ -322,9 +322,7 @@ class EmailNotification(NotificationBase):
                 content = None
 
             if content is None:
-                content = self.get_html2text_converter().handle(
-                    super().render("html", context)
-                )
+                content = self.get_html2text_converter().handle(super().render("html", context))
         else:
             content = super().render(render_type, context)
 
@@ -334,10 +332,10 @@ class EmailNotification(NotificationBase):
     def get_html2text_converter():
         try:
             import html2text
-        except ImportError:
+        except ImportError as err:
             raise Exception(
                 "HTML2Text is required for sending an EmailNotification with auto HTML to text conversion."
-            )
+            ) from err
 
         h = html2text.HTML2Text()
 
@@ -407,10 +405,10 @@ class TwilioTextNotification(NotificationBase):
         if not from_number:
             try:
                 from_number = settings.TWILIO_DEFAULT_FROM_NUMBER
-            except AttributeError:
+            except AttributeError as err:
                 raise Exception(
                     "TWILIO_DEFAULT_FROM_NUMBER setting is required for sending a TwilioTextNotification"
-                )
+                ) from err
 
         return from_number
 
@@ -425,22 +423,17 @@ class TwilioTextNotification(NotificationBase):
         attachments=None,
     ):
         try:
-            # twilio version 6
             from twilio.rest import Client
-        except ImportError:
-            try:
-                # twillio version < 6
-                from twilio.rest import TwilioRestClient as Client
-            except ImportError:
-                raise Exception("Twilio is required for sending a TwilioTextNotification.")
+        except ImportError as err:
+            raise Exception("Twilio is required for sending a TwilioTextNotification.") from err
 
         try:
             account_sid = settings.TWILIO_ACCOUNT_SID
             auth_token = settings.TWILIO_AUTH_TOKEN
-        except AttributeError:
+        except AttributeError as err:
             raise Exception(
                 "TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN settings are required for sending a TwilioTextNotification"
-            )
+            ) from err
 
         client = Client(account_sid, auth_token)
 

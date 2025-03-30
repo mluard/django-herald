@@ -15,8 +15,8 @@ class MyNotification(EmailNotification):
     def get_attachments(self):
         # this returns two attachments, one a text file, the other an inline attachment that can be referred to in a
         # template using cid: notation
-        fp = open("tests/python.jpeg", "rb")
-        img = MIMEImage(fp.read())
+        with open("tests/python.jpeg", "rb") as fp:
+            img = MIMEImage(fp.read())
         img.add_header("Content-ID", "<{}>".format("python.jpg"))
 
         raw_data = "Some Report Data"
@@ -51,6 +51,6 @@ class MyNotificationAttachmentOpen(EmailNotification):
         with open("tests/python.jpeg", "rb") as f:
             img = File(f)
 
-        img2 = File(open("tests/python.jpeg", "rb"))
+        img2 = File(open("tests/python.jpeg", "rb"))  # noqa: SIM115
 
         return [img, img2]
