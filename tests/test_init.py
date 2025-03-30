@@ -29,7 +29,7 @@ class InitTests(TestCase):
         self.assertEqual(len(registry._registry), 5)
 
     def test_register_invalid(self):
-        class TestNotification(object):
+        class TestNotification:
             pass
 
         with self.assertRaises(ValueError):

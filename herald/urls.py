@@ -3,7 +3,8 @@ Urls for herald app
 """
 
 from django.urls import path
-from .views import TestNotificationList, TestNotification
+
+from .views import TestNotification, TestNotificationList
 
 urlpatterns = [
     path("", TestNotificationList.as_view(), name="herald_preview_list"),

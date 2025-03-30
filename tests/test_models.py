@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 from django.test import TestCase
 
-from herald.models import SentNotification, Notification
+from herald.models import Notification, SentNotification
 from tests.notifications import MyNotification
 
 

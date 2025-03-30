@@ -3,24 +3,23 @@ Base notification classes
 """
 
 import json
+import re
 from email.mime.base import MIMEBase
 from mimetypes import guess_type
 
 import jsonpickle
-import re
-
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.core.files import File
 from django.core.mail import EmailMultiAlternatives
 from django.template import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.core.files import File
 
 from .models import SentNotification
 
 
-class NotificationBase(object):
+class NotificationBase:
     """
     base class for sending notifications
     """
@@ -48,12 +47,11 @@ class NotificationBase(object):
     def get_verbose_name(cls):
         if cls.verbose_name:
             return cls.verbose_name
-        else:
-            return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
+        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
 
     @classmethod
     def get_class_path(cls):
-        return "{}.{}".format(cls.__module__, cls.__name__)
+        return f"{cls.__module__}.{cls.__name__}"
 
     def send(self, raise_exception=False, user=None):
         """
@@ -125,7 +123,7 @@ class NotificationBase(object):
 
         notifications = SentNotification.objects.filter(date_sent__lt=cutoff_date)
         count = notifications.delete()
-        print("Deleted {} expired notifications.".format(count))
+        print(f"Deleted {count} expired notifications.")
 
     def get_recipients(self):
         """
@@ -154,7 +152,7 @@ class NotificationBase(object):
         Returns a subject string. Optional.
         """
 
-        return None
+        return
 
     def get_attachments(self):
         """
@@ -162,7 +160,7 @@ class NotificationBase(object):
 
         This only works with email.
         """
-        return None
+        return
 
     def render(self, render_type, context):
         """

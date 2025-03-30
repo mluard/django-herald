@@ -1,7 +1,7 @@
 import datetime
 
-from django.utils import timezone
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from ...models import SentNotification
 
@@ -39,4 +39,4 @@ class Command(BaseCommand):
             if deleted_notifications is not None
             else present_notifications
         )
-        self.stdout.write("Successfully deleted {num} notification(s)".format(num=deleted_num))
+        self.stdout.write(f"Successfully deleted {deleted_num} notification(s)")

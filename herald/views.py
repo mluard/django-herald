@@ -49,6 +49,4 @@ class TestNotification(View):
         render_type = "plain" if render_type == "text" else render_type
         charset = settings.DEFAULT_CHARSET
 
-        return HttpResponse(
-            content, content_type="text/{}; charset={}".format(render_type, charset)
-        )
+        return HttpResponse(content, content_type=f"text/{render_type}; charset={charset}")
