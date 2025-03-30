@@ -137,7 +137,7 @@ class BaseNotificationTests(TestCase):
     def test_resend(self):
         notification = SentNotification()
 
-        with patch.object(NotificationBase, "_send") as mocked__send:
+        with patch.object(NotificationBase, "_send"):
             result = NotificationBase.resend(notification)
             self.assertTrue(result)
 
