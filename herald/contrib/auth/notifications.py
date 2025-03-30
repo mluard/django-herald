@@ -68,9 +68,7 @@ class PasswordResetEmail(EmailNotification):
                 "full_reset_url": "{}://{}{}".format(
                     protocol,
                     self.domain,
-                    reverse(
-                        "password_reset_confirm", kwargs={"uidb64": uid, "token": token}
-                    ),
+                    reverse("password_reset_confirm", kwargs={"uidb64": uid, "token": token}),
                 ),
                 "email": self.user.email,
                 "domain": self.domain,
@@ -94,9 +92,7 @@ class PasswordResetEmail(EmailNotification):
 
         if not subject:
             # subject was not defined on the class. Use the default subject template to get the subject.
-            subject = loader.render_to_string(
-                self.subject_template_name, self.get_context_data()
-            )
+            subject = loader.render_to_string(self.subject_template_name, self.get_context_data())
             # can't have newlines
             return "".join(subject.splitlines())
 

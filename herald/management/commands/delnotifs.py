@@ -17,9 +17,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--start", help="includes this date, format YYYY-MM-DD", type=valid_date
         )
-        parser.add_argument(
-            "--end", help="up to this date, format YYYY-MM-DD", type=valid_date
-        )
+        parser.add_argument("--end", help="up to this date, format YYYY-MM-DD", type=valid_date)
 
     def handle(self, *args, **options):
         start_date = options.get("start")
@@ -29,9 +27,7 @@ class Command(BaseCommand):
             qs = SentNotification.objects.filter(date_sent__date=timezone.localdate())
         else:
             today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
-            date_filters = {
-                "date_sent__lt": end_date or (today + datetime.timedelta(days=1))
-            }
+            date_filters = {"date_sent__lt": end_date or (today + datetime.timedelta(days=1))}
             if start_date:
                 date_filters["date_sent__gte"] = start_date
             qs = SentNotification.objects.filter(**date_filters)
@@ -43,6 +39,4 @@ class Command(BaseCommand):
             if deleted_notifications is not None
             else present_notifications
         )
-        self.stdout.write(
-            "Successfully deleted {num} notification(s)".format(num=deleted_num)
-        )
+        self.stdout.write("Successfully deleted {num} notification(s)".format(num=deleted_num))

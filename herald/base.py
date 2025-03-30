@@ -49,9 +49,7 @@ class NotificationBase(object):
         if cls.verbose_name:
             return cls.verbose_name
         else:
-            return re.sub(
-                r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__
-            )
+            return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
 
     @classmethod
     def get_class_path(cls):
@@ -189,9 +187,7 @@ class NotificationBase(object):
         except TemplateDoesNotExist:
             content = None
 
-            if settings.DEBUG or getattr(
-                settings, "HERALD_RAISE_MISSING_TEMPLATES", True
-            ):
+            if settings.DEBUG or getattr(settings, "HERALD_RAISE_MISSING_TEMPLATES", True):
                 raise
 
         return content
@@ -325,9 +321,7 @@ class EmailNotification(NotificationBase):
         return self.attachments
 
     def render(self, render_type, context):
-        if render_type == "text" and getattr(
-            settings, "HERALD_HTML2TEXT_ENABLED", False
-        ):
+        if render_type == "text" and getattr(settings, "HERALD_HTML2TEXT_ENABLED", False):
             try:
                 content = super(EmailNotification, self).render("text", context)
 
@@ -371,7 +365,6 @@ class EmailNotification(NotificationBase):
         extra_data=None,
         attachments=None,
     ):
-
         extra_data = extra_data or {}
 
         mail = EmailMultiAlternatives(
@@ -447,9 +440,7 @@ class TwilioTextNotification(NotificationBase):
                 # twillio version < 6
                 from twilio.rest import TwilioRestClient as Client
             except ImportError:
-                raise Exception(
-                    "Twilio is required for sending a TwilioTextNotification."
-                )
+                raise Exception("Twilio is required for sending a TwilioTextNotification.")
 
         try:
             account_sid = settings.TWILIO_ACCOUNT_SID

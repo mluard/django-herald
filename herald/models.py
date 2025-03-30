@@ -25,9 +25,7 @@ class SentNotification(models.Model):
     text_content = models.TextField(null=True, blank=True)
     html_content = models.TextField(null=True, blank=True)
     sent_from = models.CharField(max_length=100, null=True, blank=True)
-    recipients = models.CharField(
-        max_length=2000
-    )  # Comma separated list of emails or numbers
+    recipients = models.CharField(max_length=2000)  # Comma separated list of emails or numbers
     subject = models.CharField(max_length=255, null=True, blank=True)
     extra_data = models.TextField(null=True, blank=True)  # json dictionary
     date_sent = models.DateTimeField()

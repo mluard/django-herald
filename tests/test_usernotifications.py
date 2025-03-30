@@ -18,9 +18,7 @@ class UserNotificationTests(TestCase):
         # refresh the user
         self.user = User.objects.get(id=user.id)
         # add a notification
-        notification = Notification(
-            notification_class=MyOtherNotification.get_class_path()
-        )
+        notification = Notification(notification_class=MyOtherNotification.get_class_path())
         notification.save()
 
         # disable the notification
@@ -32,9 +30,7 @@ class UserNotificationTests(TestCase):
         self.assertTrue(result, True)
 
         sent_notification = SentNotification.objects.all()[0]
-        self.assertEqual(
-            sent_notification.status, sent_notification.STATUS_USER_DISABLED
-        )
+        self.assertEqual(sent_notification.status, sent_notification.STATUS_USER_DISABLED)
 
     def test_send_enabled(self):
         result = MyNotification().send(user=self.user)

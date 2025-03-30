@@ -1,6 +1,7 @@
 """
 Testing custom commands
 """
+
 from datetime import timedelta, datetime
 
 from django.core.management import call_command
@@ -34,12 +35,8 @@ class DeleteNotification(TestCase):
             notification_class=NOTIFICATION_CLASS,
             date_sent=timezone.now() - timedelta(days=1),
         ).save()
-        SentNotification(
-            notification_class=NOTIFICATION_CLASS, date_sent=timezone.now()
-        ).save()
-        SentNotification(
-            notification_class=NOTIFICATION_CLASS, date_sent=timezone.now()
-        ).save()
+        SentNotification(notification_class=NOTIFICATION_CLASS, date_sent=timezone.now()).save()
+        SentNotification(notification_class=NOTIFICATION_CLASS, date_sent=timezone.now()).save()
 
     def test_date_validator(self):
         self.assertEqual(valid_date("2017-01-01"), datetime(2017, 1, 1))
@@ -50,9 +47,7 @@ class DeleteNotification(TestCase):
 
     def test_delete_start_end_range_args(self):
         two_days_ago = self.today - timedelta(days=2)
-        call_command(
-            "delnotifs", stdout=self.out, start=str(two_days_ago), end=str(self.today)
-        )
+        call_command("delnotifs", stdout=self.out, start=str(two_days_ago), end=str(self.today))
         self.assertIn(MSG.format(num=2), self.out.getvalue())
 
     def test_start_date_only_arg(self):

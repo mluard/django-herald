@@ -8,12 +8,8 @@ from tests.notifications import MyNotification
 
 class SentNotificationTests(TestCase):
     def test_str(self):
-        notification = SentNotification(
-            notification_class="tests.notifications.MyNotification"
-        )
-        self.assertEqual(
-            str(notification), "tests.notifications.MyNotification"
-        )
+        notification = SentNotification(notification_class="tests.notifications.MyNotification")
+        self.assertEqual(str(notification), "tests.notifications.MyNotification")
 
     def test_get_recipients(self):
         notification = SentNotification(recipients="test@test.com,example@example.com")
@@ -27,14 +23,10 @@ class SentNotificationTests(TestCase):
 
     def test_get_extra_data(self):
         notification = SentNotification(extra_data='{"something":["one","two"]}')
-        self.assertDictEqual(
-            notification.get_extra_data(), {"something": ["one", "two"]}
-        )
+        self.assertDictEqual(notification.get_extra_data(), {"something": ["one", "two"]})
 
     def test_resend(self):
-        notification = SentNotification(
-            notification_class="tests.notifications.MyNotification"
-        )
+        notification = SentNotification(notification_class="tests.notifications.MyNotification")
         with patch.object(MyNotification, "resend") as mocked_resend:
             notification.resend()
             mocked_resend.assert_called_once_with(notification)
@@ -42,9 +34,5 @@ class SentNotificationTests(TestCase):
 
 class NotificationTests(TestCase):
     def test_str(self):
-        notification = Notification(
-            notification_class="tests.notifications.MyNotification"
-        )
-        self.assertEqual(
-            str(notification), "tests.notifications.MyNotification"
-        )
+        notification = Notification(notification_class="tests.notifications.MyNotification")
+        self.assertEqual(str(notification), "tests.notifications.MyNotification")

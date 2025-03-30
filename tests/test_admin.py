@@ -10,9 +10,7 @@ from herald.models import SentNotification
 
 class ViewsTests(TestCase):
     def setUp(self):
-        get_user_model().objects.create_superuser(
-            "admin", "admin@example.com", "password"
-        )
+        get_user_model().objects.create_superuser("admin", "admin@example.com", "password")
         self.client = Client()
         self.client.login(username="admin", password="password")
         self.notification = SentNotification.objects.create(
@@ -28,18 +26,14 @@ class ViewsTests(TestCase):
 
     def test_detail(self):
         response = self.client.get(
-            reverse(
-                "admin:herald_sentnotification_change", args=(self.notification.pk,)
-            )
+            reverse("admin:herald_sentnotification_change", args=(self.notification.pk,))
         )
         self.assertEqual(response.status_code, 200)
 
     def test_resend(self):
         with patch.object(SentNotification, "resend") as mocked_resend:
             response = self.client.get(
-                reverse(
-                    "admin:herald_sentnotification_resend", args=(self.notification.pk,)
-                ),
+                reverse("admin:herald_sentnotification_resend", args=(self.notification.pk,)),
                 follow=True,
             )
             mocked_resend.assert_called_once()
@@ -54,9 +48,7 @@ class ViewsTests(TestCase):
         with patch.object(SentNotification, "resend") as mocked_resend:
             mocked_resend.return_value = False
             response = self.client.get(
-                reverse(
-                    "admin:herald_sentnotification_resend", args=(self.notification.pk,)
-                ),
+                reverse("admin:herald_sentnotification_resend", args=(self.notification.pk,)),
                 follow=True,
             )
             mocked_resend.assert_called_once()

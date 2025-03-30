@@ -80,9 +80,7 @@ class SentNotificationAdmin(admin.ModelAdmin):
         ] + urls
 
     @csrf_protect_m
-    def resend_view(
-        self, request, object_id, extra_context=None
-    ):  # pylint: disable=W0613
+    def resend_view(self, request, object_id, extra_context=None):  # pylint: disable=W0613
         """
         View that re-sends the notification
         """
@@ -96,9 +94,7 @@ class SentNotificationAdmin(admin.ModelAdmin):
                 request, "The notification was resent successfully.", messages.SUCCESS
             )
         else:
-            self.message_user(
-                request, "The notification failed to resend.", messages.ERROR
-            )
+            self.message_user(request, "The notification failed to resend.", messages.ERROR)
 
         return self.response_post_save_change(request, obj)
 
