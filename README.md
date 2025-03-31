@@ -1,8 +1,8 @@
 # django-herald
 
 [![Latest PyPI version](https://badge.fury.io/py/django-herald.svg)](https://pypi.python.org/pypi/django-herald)
-[![Tests](https://github.com/worthwhile/django-herald/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/worthwhile/django-herald/actions/workflows/ci.yml)
-[![Black](https://github.com/worthwhile/django-herald/actions/workflows/black.yml/badge.svg)](https://github.com/worthwhile/django-herald/actions/workflows/black.yml)
+[![Lint](https://github.com/worthwhile/django-herald/actions/workflows/lint.yml/badge.svg)](https://github.com/worthwhile/django-herald/actions/workflows/lint.yml)
+[![Tests](https://github.com/worthwhile/django-herald/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/worthwhile/django-herald/actions/workflows/test.yml)
 [![Coverage Status](https://codecov.io/gh/worthwhile/django-herald/coverage.svg?branch=master)](https://app.codecov.io/gh/worthwhile/django-herald)
 
 [![Logo](https://github.com/worthwhile/django-herald/raw/master/logo.png)](https://github.com/worthwhile/django-herald)
@@ -17,11 +17,11 @@ A Django messaging library that features:
 
 # Python/Django Support
 
-We try to make herald support all versions of django that django supports + all versions in between. 
+Herald tries to support all versions of django that django supports + all versions in between. 
 
 For python, herald supports all versions of python that the above versions of django support.
 
-So as of herald v0.3 we support django 3.2 and 4.x+, and python 3.6, 3.7, 3.8, 3.9, and 3.10.
+As of herald v0.4, we test against django 4.2 on python 3.8 through 3.12 and 5.x+ on python 3.10, through 3.13.
 
 # Installation
 
@@ -266,7 +266,18 @@ And in your template you would refer to it like this, and you would not need to 
     <img src="cid:python.jpeg" />
 ```
 
-### HTML2Text Support
+### Other MIME attachments
+
+You can also attach any MIMEBase objects as regular attachments, but you must add a content-disposition header, or they will be inaccessible:  
+
+```python
+my_image.add_header('Content-Disposition', 'attachment; filename="python.jpg"')
+```
+
+Attachments can cause your database to become quite large, so you should be sure to run the management commands to purge the database of old messages.
+
+
+## HTML2Text Support
 
 Django Herald can auto convert your HTML emails to plain text.  Any email without a plain text version
 will be auto converted if you enable this feature.
@@ -298,7 +309,7 @@ HERALD_RAISE_MISSING_TEMPLATES = True
 
 By default, Herald will raise an exception if a template is missing when true (default).
 
-### Twilio
+## Twilio
 
 ```
 # Install twilio
@@ -319,18 +330,93 @@ TWILIO_DEFAULT_FROM_NUMBER = "+1234567890"
 
 ```
 
-### Other MIME attachments
+# Development
 
-You can also attach any MIMEBase objects as regular attachments, but you must add a content-disposition header, or they will be inaccessible:  
+## Setting up your development environment
 
-```python
-my_image.add_header('Content-Disposition', 'attachment; filename="python.jpg"')
-```
+Django Herald uses [uv](https://github.com/astral-sh/uv) for dependency management and package building.
 
-Attachments can cause your database to become quite large, so you should be sure to run the management commands to purge the database of old messages.
-
-# Running Tests
-
+1. Install uv:
 ```bash
-python runtests.py
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
+
+2. Install development dependencies:
+```bash
+uv sync --dev --all-extras
+```
+
+## Running tests
+
+Run the test suite within your development environment:
+```bash
+uv run runtests.py
+```
+
+`nox` is configured to use `uv` as a backend, but it will not auto install missing python verions needed to run the full test matrix. Make sure each version of python you need is accessible by `uv`.
+
+Use `nox` to run tests against an LTS release of Django on the lowest supported python version:
+```bash
+# Test against Django 4.2 LTS, using python 3.8
+uv run nox -s django42
+
+# Test against Django 5.2, using python 3.10
+uv run nox -s django52
+```
+
+Run the full test matrix (all Python and Django version combinations):
+```bash
+uv run nox
+```
+
+## Code quality tools
+
+Run the formatter:
+```bash
+uv run ruff format
+```
+
+Run the linter:
+```bash
+uv run ruff check
+```
+
+## Release Process
+
+Follow these steps to create a new release:
+
+1. **Update Changelog**
+   
+   Make sure `CHANGELOG.md` is up to date with all notable changes.
+
+2. **Update Version**
+   
+   Edit `herald/_version.py` to increment the version number according to [semantic versioning](https://semver.org/):
+   ```python
+   __version__ = "x.y.z"  # Update this line
+   ```
+
+3. **Create Git Tag**
+   ```bash
+   git add herald/_version.py
+   git commit -m "Bump version to x.y.z"
+   git tag -a vx.y.z -m "Version x.y.z"
+   ```
+
+4. **Build the Package**
+   ```bash
+   uv clean
+   uv build
+   ```
+   This will create distribution packages in the `dist/` directory.
+
+5. **Publish to PyPI**
+   ```bash
+   uv publish --token your-pypi-token
+   ```
+
+6. **Push to GitHub**
+   ```bash
+   git push origin master
+   git push origin vx.y.z
+   ```

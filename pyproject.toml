@@ -51,6 +51,14 @@ include = [
     "LICENSE",
 ]
 
+[tool.coverage.paths]
+source = ["herald"]
+
+[tool.coverage.run]
+branch = true
+omit = ["*/migrations/*"]
+data_file = ".coverage-data/.coverage"
+
 [tool.ruff]
 line-length = 98
 target-version = "py38"
@@ -107,5 +115,4 @@ dev = [
     "html2text>=2019.8.11",
     "coveralls>=4.0.1",
     "ruff>=0.11.2",
-    "nox>=2025.2.9",
 ]

@@ -68,7 +68,11 @@ def test(session, django, twilio, html2text):
 
     # Run the tests with unique coverage file
     session.run(
-        "coverage", "run", f"--data-file=.coverage-data/{coverage_file}", "--source=herald", "runtests.py"
+        "coverage",
+        "run",
+        f"--data-file=.coverage-data/{coverage_file}",
+        "--source=herald",
+        "runtests.py",
     )
 
 
@@ -90,10 +94,10 @@ def format(session):
 def coverage(session):
     """Report test coverage by combining data from parallel runs."""
     session.install("coverage")
-    
+
     # Combine all coverage data files
     session.run("coverage", "combine", "--keep", ".coverage-data/.coverage.*", silent=True)
-    
+
     # Generate reports
     session.run("coverage", "report", "--show-missing")
     session.run("coverage", "html")
@@ -112,7 +116,7 @@ def django42(session):
 def django52(session):
     """Run a quick test with default versions for development against Django 5.2"""
     # session.install("django~=5.2.0")
-    session.install(f"django>=5.2.0rc,<5.2.1")
+    session.install("django>=5.2.0rc,<5.2.1")
     _quick_test(session)
 
 

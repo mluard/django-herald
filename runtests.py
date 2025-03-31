@@ -12,4 +12,9 @@ def runtests():
 
 
 if __name__ == "__main__":
-    runtests()
+    # Check if being run directly or via nox
+    if os.environ.get("NOX_CURRENT_SESSION"):
+        # When run through nox, argv is already properly set
+        execute_from_command_line(sys.argv)
+    else:
+        runtests()
