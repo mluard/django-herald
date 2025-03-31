@@ -1,7 +1,0 @@
-[paths]
-source = herald
-
-[run]
-branch = True
-omit =
-    */migrations/*

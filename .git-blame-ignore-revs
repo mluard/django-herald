@@ -1,2 +1,6 @@
 # Migrate code style to Black
 06b35cd32b87d502a3621d7562c529b586ef5bda
+
+# Reformat code with Ruff and new line length
+258f0df5a26ff21ca07131cf0d875018086d0d05
+366387f50434e2b2d0dacc72dc76ff2dc57e5f6c
