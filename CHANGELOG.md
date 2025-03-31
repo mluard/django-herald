@@ -1,4 +1,10 @@
-## TBD (TBD)
+## 0.4.0 (unreleased)
+- Drop official support for django < 4.2 and python < 3.8
+- Add support for django 5.0, 5.1, and 5.2
+- Add support for python 3.13
+- Use nox to drive matrix testing, targeting djagno 4.2 and 5.x
+- Modernize project configuration, dev and build tools, and github workflows
+- Replace black with ruff for formatting, and also use ruff for linting
 
 
 ## 0.3.0 (10-18-2022)
