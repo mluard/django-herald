@@ -1,0 +1,60 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  generate-jobs:
+    runs-on: ubuntu-latest
+    outputs:
+      session: ${{ steps.set-matrix.outputs.session }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: wntrblm/nox@main
+    - id: set-matrix
+      shell: bash
+      run: echo "session=$(nox --json -l | jq -c '[.[].session]')" | tee --append "$GITHUB_OUTPUT"
+
+  tests:
+    name: Session ${{ matrix.session }}
+    needs: [generate-jobs]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        session: ${{ fromJson(needs.generate-jobs.outputs.session) }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: wntrblm/nox@main
+    - run: nox -s "${{ matrix.session }}"
+    - name: Upload coverage data
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-data-${{ matrix.session }}
+        path: .coverage-data/.coverage.*
+
+  coverage:
+    runs-on: ubuntu-latest
+    name: Report coverage to Codecov
+    needs: [tests]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Download coverage data
+      uses: actions/download-artifact@v4
+      with:
+        path: ./coverage-artifacts/
+        pattern: coverage-data-*
+        merge-multiple: true
+    - name: Install coverage
+      run: pip install coverage
+    - name: Prepare coverage data directory
+      run: mkdir -p .coverage-data
+    - name: Combine coverage reports
+      run: |
+        find ./coverage-artifacts -name ".coverage.*" -exec cp {} .coverage-data/ \;
+        coverage combine --keep .coverage-data/.coverage.*
+        coverage xml
+    - name: Upload to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
