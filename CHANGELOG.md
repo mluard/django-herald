@@ -1,5 +1,6 @@
 ## 0.4.0 (unreleased)
 - Drop official support for django < 4.2 and python < 3.8
+- Drop support for twilio < 6.0.0
 - Add support for django 5.0, 5.1, and 5.2
 - Add support for python 3.13
 - Use nox to drive matrix testing, targeting djagno 4.2 and 5.x

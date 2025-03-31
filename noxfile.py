@@ -1,16 +1,27 @@
+import pathlib
+
 import nox
 
-nox.options.sessions = ["format", "lint", "test", "coverage"]
+nox.options.sessions = ["test", "coverage"]
 nox.options.default_venv_backend = "uv"
 
 # Define version matrices
+# This matrix isn't exhaustive.  It hits the min and max python versions
+# for each django version.  For the twilio and html2text versions, it
+# runs against a versions that are several years old and the latest
+# versions.  This should catch any breaking changes in the libraries
+# that we depend on.
 PYTHON_VERSIONS = ["3.8", "3.10", "3.12", "3.13", "3.14"]
 DJANGO_VERSIONS = ["4.2", "5.0", "5.1", "5.2-rc"]
-TWILIO_VERSIONS = ["6.0.0", "9.5.1"]
-HTML2TEXT_VERSIONS = ["2019.8.11", "2024.2.26"]
+DEPENDECY_VERSIONS = [
+    # There's no interdependency between these versions, so only
+    # test and old and latest version of each, not every combination.
+    {"twilio": "6.0.0", "html2text": "2019.8.11"},
+    {"twilio": "9.5.1", "html2text": "2024.2.26"},
+]
 
-# Python/Django compatibility constraints
-DJANGO_PYTHON_COMPATIBILITY = {
+# Python/Django test combinations
+DJANGO_PYTHON_MATRIX = {
     "4.2": ["3.8", "3.12"],
     "5.0": ["3.10", "3.13"],
     "5.1": ["3.10", "3.13"],
@@ -18,22 +29,30 @@ DJANGO_PYTHON_COMPATIBILITY = {
 }
 
 
+def _coverage_path():
+    path = pathlib.Path(".coverage-data")
+    path.mkdir(exist_ok=True)
+    return path
+
+
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize("django", DJANGO_VERSIONS)
-@nox.parametrize("twilio", TWILIO_VERSIONS)
-@nox.parametrize("html2text", HTML2TEXT_VERSIONS)
-def test(session, django, twilio, html2text):
+@nox.parametrize("dependency_versions", DEPENDECY_VERSIONS)
+def test(session, django, dependency_versions):
     """Run tests with all dependencies installed."""
 
     # Skip incompatible Python/Django combinations
-    if session.python not in DJANGO_PYTHON_COMPATIBILITY.get(django, []):
-        session.skip(f"Django {django} not compatible with Python {session.python}")
+    if session.python not in DJANGO_PYTHON_MATRIX.get(django, []):
+        session.skip(f"Django {django} and Python {session.python} is not in the text matrix")
 
-    # Create a unique coverage data file for parallel runs
+    # Create a unique coverage data file each parametrized run
+    twilio = dependency_versions["twilio"]
+    html2text = dependency_versions["html2text"]
     session_id = f"py{session.python}-django{django}-twilio{twilio}-html2text{html2text}".replace(
         ".", "_"
     )
-    coverage_file = f".coverage.{session_id}"
+    coverage_file = _coverage_path() / f".coverage.{session_id}"
+    session.log(f"Coverage file: {coverage_file}")
 
     # Install base dependencies
     session.install("coverage", "pytest", "jsonpickle")
@@ -62,6 +81,7 @@ def test(session, django, twilio, html2text):
 
     # Enable html2text for tests
     session.env["HERALD_HTML2TEXT_ENABLED"] = "1"
+    session.env["DJANGO_SETTINGS_MODULE"] = "tests.settings"
 
     # Install herald in development mode
     session.install("-e", ".")
@@ -70,9 +90,10 @@ def test(session, django, twilio, html2text):
     session.run(
         "coverage",
         "run",
-        f"--data-file=.coverage-data/{coverage_file}",
+        f"--data-file={coverage_file}",
         "--source=herald",
         "runtests.py",
+        "test",
     )
 
 
@@ -85,7 +106,7 @@ def lint(session):
 
 @nox.session
 def format(session):
-    """Run the formatter."""
+    """Run the formatter, checking for changes without making them."""
     session.install("ruff")
     session.run("ruff", "format", "--check", ".")
 
@@ -93,10 +114,16 @@ def format(session):
 @nox.session
 def coverage(session):
     """Report test coverage by combining data from parallel runs."""
-    session.install("coverage")
+    # Install coverage with TOML support
+    session.install("coverage[toml]")
+
+    # Check if there are any coverage files
+    if not list(_coverage_path().glob(".coverage.*")):
+        session.log(f"No coverage data files found in {_coverage_path()}")
+        return
 
     # Combine all coverage data files
-    session.run("coverage", "combine", "--keep", ".coverage-data/.coverage.*", silent=True)
+    session.run("coverage", "combine", "--keep", _coverage_path())
 
     # Generate reports
     session.run("coverage", "report", "--show-missing")
@@ -112,19 +139,20 @@ def django42(session):
 
 
 # Session for running tests against Django 5.2
-@nox.session(python="3.10", tags=["manual"])
+@nox.session(python="3.14", tags=["manual"])
 def django52(session):
     """Run a quick test with default versions for development against Django 5.2"""
+    # Once Django 5.2 is released, use the following line:q
     # session.install("django~=5.2.0")
     session.install("django>=5.2.0rc,<5.2.1")
     _quick_test(session)
 
 
 def _quick_test(session):
-    """Run quick tests with python and django versions already installed in the session"""
     session.install("coverage", "pytest", "jsonpickle")
     session.install("twilio==9.5.1")
     session.install("html2text==2024.2.26")
     session.env["HERALD_HTML2TEXT_ENABLED"] = "1"
+    session.env["DJANGO_SETTINGS_MODULE"] = "tests.settings"
     session.install("-e", ".")
-    session.run("coverage", "run", "--source=herald", "runtests.py")
+    session.run("python", "-Wd", "runtests.py", "test")

@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Report coverage to Codecov
     needs: [tests]
+    if: github.repository == 'worthwhile/django-herald'
     steps:
     - uses: actions/checkout@v4
     - name: Download coverage data
